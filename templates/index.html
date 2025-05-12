@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rubik's Cube Solver</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Online Rubik's Cube Solver</h1>
+
+    <div class="cube-input">
+        <h2>Set your scrambled cube:</h2>
+        <div class="cube-container">
+            <div class="face up" data-face="U">
+                <div class="facelet" data-row="0" data-col="0"></div><div class="facelet" data-row="0" data-col="1"></div><div class="facelet" data-row="0" data-col="2"></div>
+                <div class="facelet" data-row="1" data-col="0"></div><div class="facelet" data-row="1" data-col="1"></div><div class="facelet" data-row="1" data-col="2"></div>
+                <div class="facelet" data-row="2" data-col="0"></div><div class="facelet" data-row="2" data-col="1"></div><div class="facelet" data-row="2" data-col="2"></div>
+            </div>
+            <div class="face left" data-face="L">
+                <div class="facelet" data-row="0" data-col="0"></div><div class="facelet" data-row="0" data-col="1"></div><div class="facelet" data-row="0" data-col="2"></div>
+                <div class="facelet" data-row="1" data-col="0"></div><div class="facelet" data-row="1" data-col="1"></div><div class="facelet" data-row="1" data-col="2"></div>
+                <div class="facelet" data-row="2" data-col="0"></div><div class="facelet" data-row="2" data-col="1"></div><div class="facelet" data-row="2" data-col="2"></div>
+            </div>
+            <div class="face front" data-face="F">
+                <div class="facelet" data-row="0" data-col="0"></div><div class="facelet" data-row="0" data-col="1"></div><div class="facelet" data-row="0" data-col="2"></div>
+                <div class="facelet" data-row="1" data-col="0"></div><div class="facelet" data-row="1" data-col="1"></div><div class="facelet" data-row="1" data-col="2"></div>
+                <div class="facelet" data-row="2" data-col="0"></div><div class="facelet" data-row="2" data-col="1"></div><div class="facelet" data-row="2" data-col="2"></div>
+            </div>
+            <div class="face right" data-face="R">
+                <div class="facelet" data-row="0" data-col="0"></div><div class="facelet" data-row="0" data-col="1"></div><div class="facelet" data-row="0" data-col="2"></div>
+                <div class="facelet" data-row="1" data-col="0"></div><div class="facelet" data-row="1" data-col="1"></div><div class="facelet" data-row="1" data-col="2"></div>
+                <div class="facelet" data-row="2" data-col="0"></div><div class="facelet" data-row="2" data-col="1"></div><div class="facelet" data-row="2" data-col="2"></div>
+            </div>
+            <div class="face back" data-face="B">
+                <div class="facelet" data-row="0" data-col="0"></div><div class="facelet" data-row="0" data-col="1"></div><div class="facelet" data-row="0" data-col="2"></div>
+                <div class="facelet" data-row="1" data-col="0"></div><div class="facelet" data-row="1" data-col="1"></div><div class="facelet" data-row="1" data-col="2"></div>
+                <div class="facelet" data-row="2" data-col="0"></div><div class="facelet" data-row="2" data-col="1"></div><div class="facelet" data-row="2" data-col="2"></div>
+            </div>
+            <div class="face down" data-face="D">
+                <div class="facelet" data-row="0" data-col="0"></div><div class="facelet" data-row="0" data-col="1"></div><div class="facelet" data-row="0" data-col="2"></div>
+                <div class="facelet" data-row="1" data-col="0"></div><div class="facelet" data-row="1" data-col="1"></div><div class="facelet" data-row="1" data-col="2"></div>
+                <div class="facelet" data-row="2" data-col="0"></div><div class="facelet" data-row="2" data-col="1"></div><div class="facelet" data-row="2" data-col="2"></div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="color-picker">
+                <div class="color-option" data-color="U" style="background-color: white;"></div>
+                <div class="color-option" data-color="R" style="background-color: red;"></div>
+                <div class="color-option" data-color="F" style="background-color: blue;"></div>
+                <div class="color-option" data-color="D" style="background-color: yellow;"></div>
+                <div class="color-option" data-color="L" style="background-color: orange;"></div>
+                <div class="color-option" data-color="B" style="background-color: green;"></div>
+            </div>
+            <button id="get-solution">Solve Cube</button>
+        </div>
+    </div>
+
+    <div class="solution">
+        <h2>Solution:</h2>
+        <p id="solution-steps">Set the cube colors above and click "Solve Cube".</p>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
