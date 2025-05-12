@@ -1,0 +1,131 @@
+body {
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+    background-color: #f0f0f0;
+}
+
+h1, h2 {
+    color: #333;
+}
+
+.cube-input {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.cube-container {
+    display: grid;
+    /* Adjust grid layout to match the 2D cube representation */
+    /* Example: 4 rows high for U, L-F-R-B, D */
+    grid-template-columns: repeat(4, 90px);
+    grid-template-rows: repeat(3, 90px);
+    gap: 5px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.face {
+    display: grid;
+    grid-template-columns: repeat(3, 30px);
+    grid-template-rows: repeat(3, 30px);
+    gap: 2px;
+    border: 1px solid #555;
+    box-sizing: border-box; /* Include border in element's total width and height */
+}
+
+/* Positioning faces in the 2D grid */
+.face.up    { grid-area: 1 / 2 / 2 / 3; }
+.face.left  { grid-area: 2 / 1 / 3 / 2; }
+.face.front { grid-area: 2 / 2 / 3 / 3; }
+.face.right { grid-area: 2 / 3 / 3 / 4; }
+.face.back  { grid-area: 2 / 4 / 3 / 5; }
+.face.down  { grid-area: 3 / 2 / 4 / 3; }
+
+
+.facelet {
+    width: 30px;
+    height: 30px;
+    background-color: #ccc; /* Default gray */
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+/* Color classes */
+.facelet.U { background-color: white; border: 1px solid #888;}
+.facelet.R { background-color: red; }
+.facelet.F { background-color: blue; }
+.facelet.D { background-color: yellow; }
+.facelet.L { background-color: orange; }
+.facelet.B { background-color: green; }
+
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.color-picker {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.color-option {
+    width: 35px;
+    height: 35px;
+    border: 2px solid #333;
+    border-radius: 4px;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.color-option.selected {
+    border-color: dodgerblue;
+    border-width: 4px;
+}
+
+#get-solution {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+#get-solution:hover {
+    background-color: #4cae4c;
+}
+
+.solution {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    width: 80%;
+    max-width: 600px;
+    text-align: center;
+    word-wrap: break-word; /* Prevent long solution strings from overflowing */
+}
+
+.solution h2 {
+    margin-top: 0;
+    color: #555;
+}
+
+#solution-steps {
+    font-size: 1.1em;
+    color: #007bff;
+    min-height: 1.5em; /* Reserve space for the message */
+}
