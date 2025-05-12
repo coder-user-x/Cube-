@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rubik's Cube Solver</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <!-- Embedded styles for background effects -->
+    <style>
+        /* Smooth background color change */
+        body {
+            animation: bgcolor-change 15s infinite alternate ease-in-out;
+            /* Ensure main content is above background */
+            position: relative; /* Needed for z-index to work relative to stacking context */
+            z-index: 1; /* Keep main content above background elements */
+            overflow-x: hidden; /* Prevent horizontal scrollbar from moving shapes */
+        }
+
+        @keyframes bgcolor-change {
+            0% { background-color: #f0f8ff; } /* AliceBlue */
+            25% { background-color: #e0ffff; } /* Azure */
+            50% { background-color: #f5fffa; } /* MintCream */
+            75% { background-color: #f0fff0; } /* Honeydew */
+            100% { background-color: #f0f8ff; } /* Back to AliceBlue */
+        }
+
+        /* Container for moving shapes */
+        .background-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Shapes shouldn't interfere with clicks */
+            overflow: hidden; /* Hide shapes when they move outside */
+            z-index: 0; /* Position behind main content */
+        }
+
+        /* Basic shape styling */
+        .shape {
+            position: absolute;
+            background-color: rgba(0, 123, 255, 0.1); /* Semi-transparent blue */
+            opacity: 0.6;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+            pointer-events: none;
+        }
+
+        /* Individual shape variations and animations */
+        .shape.square {
+            width: 50px;
+            height: 50px;
+            animation-name: move-square;
+            animation-duration: 15s;
+        }
+
+        .shape.circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            animation-name: move-circle;
+            animation-duration: 20s;
+        }
+
+        /* Keyframes for shape movement (example) */
+        @keyframes move-square {
+            0% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 0.6; }
+            25% { transform: translate(20vw, 50vh) rotate(90deg) scale(1.2); opacity: 0.8; }
+            50% { transform: translate(70vw, 10vh) rotate(180deg) scale(0.8); opacity: 0.5; }
+            75% { transform: translate(30vw, 90vh) rotate(270deg) scale(1.1); opacity: 0.7; }
+            100% { transform: translate(0, 0) rotate(360deg) scale(1); opacity: 0.6; }
+        }
+
+         @keyframes move-circle {
+            0% { transform: translate(80vw, 10vh) scale(1); opacity: 0.7; }
+            40% { transform: translate(10vw, 80vh) scale(0.9); opacity: 0.5; }
+            80% { transform: translate(90vw, 20vh) scale(1.1); opacity: 0.8; }
+            100% { transform: translate(80vw, 10vh) scale(1); opacity: 0.7; }
+        }
+
+        /* Add more shapes with different positions, sizes, durations, and delays */
+        .shape:nth-child(1) { top: 10%; left: 5%; animation-duration: 18s; }
+        .shape:nth-child(2) { top: 80%; left: 90%; animation-duration: 22s; animation-delay: 2s; }
+        .shape:nth-child(3) { top: 30%; left: 40%; animation-duration: 16s; animation-delay: 4s; }
+        .shape:nth-child(4) { top: 50%; left: 70%; animation-duration: 25s; animation-delay: 1s; }
+        .shape:nth-child(5) { top: 20%; left: 60%; animation-duration: 19s; animation-delay: 3s; }
+        .shape:nth-child(6) { top: 70%; left: 15%; animation-duration: 21s; animation-delay: 5s; }
+         /* Add more :nth-child rules for more shapes */
+
+        /* Ensure main content has a background so shapes don't show through text */
+        .cube-input, .solution {
+             background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
+             position: relative; /* Needed for z-index */
+             z-index: 1; /* Ensure they are above the background container */
+        }
+
+         h1, h2, .controls {
+             position: relative; /* Needed for z-index */
+             z-index: 2; /* Ensure text/controls are clearly above the background */
+         }
+
+    </style>
+</head>
+<body>
+
+    <!-- Background shapes container -->
+    <div class="background-shapes">
+        <div class="shape square"></div>
+        <div class="shape circle"></div>
+        <div class="shape square"></div>
+        <div class="shape circle"></div>
+        <div class="shape square"></div>
+        <div class="shape circle"></div>
+        <!-- Add more shape divs here for more background elements -->
+    </div>
+
+    <h1>Online Rubik's Cube Solver</h1>
+
+    <div class="cube-input">
+        <h2>Set your scrambled cube:</h2>
+        <div class="cube-container">
+            <div class="face up" data-face="U">
+                <div class="facelet" data-row="0" data-col="0"></div><div class="facelet" data-row="0" data-col="1"></div><div class="facelet" data-row="0" data-col="2"></div>
+                <div class="facelet" data-row="1" data-col="0"></div><div class="facelet" data-row="1" data-col="1"></div><div class="facelet" data-row="1" data-col="2"></div>
+                <div class="facelet" data-row="2" data-col="0"></div><div class="facelet" data-row="2" data-col="1"></div><div class="facelet" data-row="2" data-col="2"></div>
+            </div>
+            <div class="face left" data-face="L">
+                <div class="facelet" data-row="0" data-col="0"></div><div class="facelet" data-row="0" data-col="1"></div><div class="facelet" data-row="0" data-col="2"></div>
+                <div class="facelet" data-row="1" data-col="0"></div><div class="facelet" data-row="1" data-col="1"></div><div class="facelet" data-row="1" data-col="2"></div>
+                <div class="facelet" data-row="2" data-col="0"></div><div class="facelet" data-row="2" data-col="1"></div><div class="facelet" data-row="2" data-col="2"></div>
+            </div>
+            <div class="face front" data-face="F">
+                <div class="facelet" data-row="0" data-col="0"></div><div class="facelet" data-row="0" data-col="1"></div><div class="facelet" data-row="0" data-col="2"></div>
+                <div class="facelet" data-row="1" data-col="0"></div><div class="facelet" data-row="1" data-col="1"></div><div class="facelet" data-row="1" data-col="2"></div>
+                <div class="facelet" data-row="2" data-col="0"></div><div class="facelet" data-row="2" data-col="1"></div><div class="facelet" data-row="2" data-col="2"></div>
+            </div>
+            <div class="face right" data-face="R">
+                <div class="facelet" data-row="0" data-col="0"></div><div class="facelet" data-row="0" data-col="1"></div><div class="facelet" data-row="0" data-col="2"></div>
+                <div class="facelet" data-row="1" data-col="0"></div><div class="facelet" data-row="1" data-col="1"></div><div class="facelet" data-row="1" data-col="2"></div>
+                <div class="facelet" data-row="2" data-col="0"></div><div class="facelet" data-row="2" data-col="1"></div><div class="facelet" data-row="2" data-col="2"></div>
+            </div>
+            <div class="face back" data-face="B">
+                <div class="facelet" data-row="0" data-col="0"></div><div class="facelet" data-row="0" data-col="1"></div><div class="facelet" data-row="0" data-col="2"></div>
+                <div class="facelet" data-row="1" data-col="0"></div><div class="facelet" data-row="1" data-col="1"></div><div class="facelet" data-row="1" data-col="2"></div>
+                <div class="facelet" data-row="2" data-col="0"></div><div class="facelet" data-row="2" data-col="1"></div><div class="facelet" data-row="2" data-col="2"></div>
+            </div>
+            <div class="face down" data-face="D">
+                <div class="facelet" data-row="0" data-col="0"></div><div class="facelet" data-row="0" data-col="1"></div><div class="facelet" data-row="0" data-col="2"></div>
+                <div class="facelet" data-row="1" data-col="0"></div><div class="facelet" data-row="1" data-col="1"></div><div class="facelet" data-row="1" data-col="2"></div>
+                <div class="facelet" data-row="2" data-col="0"></div><div class="facelet" data-row="2" data-col="1"></div><div class="facelet" data-row="2" data-col="2"></div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="color-picker">
+                <div class="color-option" data-color="U" style="background-color: white;"></div>
+                <div class="color-option" data-color="R" style="background-color: red;"></div>
+                <div class="color-option" data-color="F" style="background-color: blue;"></div>
+                <div class="color-option" data-color="D" style="background-color: yellow;"></div>
+                <div class="color-option" data-color="L" style="background-color: orange;"></div>
+                <div class="color-option" data-color="B" style="background-color: green;"></div>
+            </div>
+            <button id="get-solution">Solve Cube</button>
+        </div>
+    </div>
+
+    <div class="solution">
+        <h2>Solution:</h2>
+        <p id="solution-steps">Set the cube colors above and click "Solve Cube".</p>
+    </div>
+
+    <!-- Link to external script.js -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+    <!-- Optional: Embedded script for specific effects if needed, but CSS handled most here -->
+    <script>
+        // No new JavaScript needed for the background effects as CSS handles animations.
+        // Your main cube logic will be in script.js
+    </script>
+
+</body>
+</html>
